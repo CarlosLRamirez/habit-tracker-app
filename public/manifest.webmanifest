@@ -1,0 +1,19 @@
+{
+  "name": "Mis hábitos",
+  "short_name": "Hábitos",
+  "description": "Tracker de hábitos personal. Tus datos se quedan en este dispositivo.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f5",
+  "theme_color": "#2f6f4f",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

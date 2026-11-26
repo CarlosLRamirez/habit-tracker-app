@@ -1,0 +1,76 @@
+# Prueba, construye y publica el tracker de hábitos en GitHub Pages.
+# Se ejecuta en cada push a main y a mano desde la pestaña Actions.
+# Si las pruebas o el build fallan, no se publica nada y sigue en línea la versión anterior.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un solo despliegue a la vez; no se cancela uno en curso para no dejar Pages a medias.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests
+        run: npx vitest run src
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Smoke test
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          for path in "" "sw.js" "manifest.webmanifest"; do
+            url="${PAGE_URL%/}/${path}"
+            code=""
+            for attempt in 1 2 3 4 5 6; do
+              code=$(curl -s -o /dev/null -w '%{http_code}' "$url" || true)
+              [ "$code" = "200" ] && break
+              sleep 10
+            done
+            echo "$url -> $code"
+            [ "$code" = "200" ] || { echo "Smoke test failed for $url"; exit 1; }
+          done
+          curl -fsS "${PAGE_URL%/}/" | grep -q 'manifest.webmanifest' || { echo "index.html no enlaza el manifest"; exit 1; }
