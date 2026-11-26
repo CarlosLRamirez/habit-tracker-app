@@ -7,6 +7,39 @@ la app está abierta. No hay servidor ni cuentas: todos los datos se guardan en 
 Tecnología: React + TypeScript + Vite, pruebas con Vitest + Testing Library, datos en
 `localStorage` y un service worker escrito a mano para el uso sin conexión.
 
+App publicada: https://carloslramirez.com/habit-tracker-app/
+
+## Cómo se construyó: AI-DLC
+
+Esta app se construyó con la metodología y el workflow de **AI-DLC (AI-Driven Development Life
+Cycle)**, versión **2.11.5**, usando Claude Code como asistente. AI-DLC organiza el desarrollo
+asistido por IA en etapas ordenadas: en cada una el asistente hace preguntas, genera el documento
+o el código y se detiene para que la persona lo apruebe antes de seguir. Así queda un registro
+escrito de lo decidido y por qué.
+
+Se usó el plan **express** (6 etapas, el más ligero):
+
+1. **Análisis de requisitos**: preguntas sobre frecuencias, funciones, plataforma, almacenamiento
+   y recordatorios; de ahí salieron los requisitos funcionales y no funcionales con su
+   trazabilidad.
+2. **Generación de código**: un plan de 11 pasos y la app con sus 59 pruebas, generados por un
+   agente desarrollador.
+3. **Build and Test**: build de producción, ejecución de las pruebas y verificación de cada
+   requisito frente al código.
+4. **Deployment Pipeline**: diseño del despliegue a GitHub Pages con GitHub Actions, estrategia y
+   runbook de rollback.
+5. **Deployment Execution**: creación del repositorio, primer despliegue y prueba de humo.
+6. **Observability Setup**: SLO, alarmas y cómo vigilar la app.
+
+Si quieres experimentar con AI-DLC:
+
+- Repositorio: https://github.com/awslabs/aidlc-workflows
+- Documentación: https://awslabs.github.io/aidlc-workflows/ (empieza por la
+  [guía de usuario](https://awslabs.github.io/aidlc-workflows/guide/00-introduction/))
+
+Los documentos de trabajo de AI-DLC (requisitos, planes, decisiones) se quedaron fuera de este
+repositorio público.
+
 ## Requisitos previos
 
 - Node.js 20 o superior y npm.
